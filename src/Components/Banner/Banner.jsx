@@ -18,7 +18,7 @@ const Banner = () => {
                             Experience the Power of Our Todo List App</p>
                           {
                             user ? 
-                            <Link to="/"
+                            <Link to="/dashboard"
                             className="bg-transparent hover:bg-yellow-300 text-yellow-300 hover:text-black rounded shadow hover:shadow-lg py-2 px-4 border border-yellow-300 hover:border-transparent">
                             Let's Work</Link>
                             :

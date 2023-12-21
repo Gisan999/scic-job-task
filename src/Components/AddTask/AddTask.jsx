@@ -1,10 +1,14 @@
+import useAuth from '../../Hooks/useAuth';
+import useAxiosSecure from '../../Hooks/useAxiosSecure';
 import './AddTask.css'
 const AddTask = () => {
+    const { user } = useAuth();
+    const axiosSecure = useAxiosSecure();
 
     const handleSubmit = event => {
         event.preventDefault();
         const form = event.target;
-        const  title = form.title.value;
+        const title = form.title.value;
         const description = form.description.value;
         const priority = form.priority.value;
         const deadline = form.deadline.value;
@@ -12,11 +16,19 @@ const AddTask = () => {
         event.target.description.value = "";
         event.target.priority.value = "";
         event.target.deadline.value = "";
-        
+        const sorting = deadline.split("-").join("");
+        // console.log(deadline.split("-").join(""));
+
         const taskData = {
-            title, description, priority, deadline
+            title, description, priority, deadline, email: user.email, sorting
         }
         console.log(taskData);
+
+        axiosSecure.post('/set/tasks', taskData)
+        .then(res => {
+            console.log(res.data);
+        })
+
     }
 
     return (
@@ -24,14 +36,22 @@ const AddTask = () => {
             <div className="form-container">
                 <form onSubmit={handleSubmit} className="form">
                     <div className="form-group">
-                        <label htmlFor="email">Task Name</label>
-                        <input required name="title" id="email" type="text" />
+                        <label htmlFor="email">Task Title</label>
+                        <input className='input999' required name="title" id="email" type="text" />
                         <br />
+
                         <label htmlFor="email">Task Priority</label>
-                        <input required name="priority" id="email" type="text" />
+
+                        <select className='input999' required name="priority">
+                            <option value="" selected>Select Priority ?</option>
+                            <option value="Low">Low</option>
+                            <option value="moderate">moderate</option>
+                            <option value="High">High</option>
+                        </select>
+
                         <br />
                         <label htmlFor="email">Task Deadline</label>
-                        <input required="" name="deadline" id="email" type="text" />
+                        <input className='input999' placeholder='dd/mm/yy' required="" name="deadline" id="email" type="date" />
                     </div>
                     <div className="form-group">
                         <label htmlFor="textarea">Task Description</label>

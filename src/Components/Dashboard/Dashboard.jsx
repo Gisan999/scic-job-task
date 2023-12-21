@@ -1,7 +1,10 @@
+import useTask from "../../Hooks/useTask";
 import AddTask from "../AddTask/AddTask";
 
 
 const Dashboard = () => {
+    const [tasks] = useTask();
+    console.log(tasks);
     return (
         <div>
             <h2>This is dashboard</h2>

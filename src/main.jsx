@@ -13,6 +13,10 @@ import Login from './Components/Login/Login.jsx';
 import Registration from './Components/Registration/Registration.jsx';
 import AddTask from './Components/AddTask/AddTask.jsx';
 import Dashboard from './Components/Dashboard/Dashboard.jsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient()
+
 
 const router = createBrowserRouter([
   {
@@ -46,7 +50,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </AuthProvider>
   </React.StrictMode>,
 )
