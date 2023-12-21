@@ -1,3 +1,4 @@
+import { ToastContainer, toast } from 'react-toastify';
 import useAuth from '../../Hooks/useAuth';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
 import './AddTask.css'
@@ -17,18 +18,16 @@ const AddTask = () => {
         event.target.priority.value = "";
         event.target.deadline.value = "";
         const sorting = deadline.split("-").join("");
-        // console.log(deadline.split("-").join(""));
-
         const taskData = {
             title, description, priority, deadline, email: user.email, sorting
         }
-        console.log(taskData);
-
         axiosSecure.post('/set/tasks', taskData)
-        .then(res => {
-            console.log(res.data);
-        })
-
+            .then(res => {
+                if (res.data.acknowledged === true) {
+                    window.location.reload(false);
+                    toast.success('Task Added Successful');
+                }
+            })
     }
 
     return (
@@ -60,6 +59,7 @@ const AddTask = () => {
                     <button type="submit" className="form-submit-btn">Add</button>
                 </form>
             </div>
+            <ToastContainer />
         </div>
     );
 };

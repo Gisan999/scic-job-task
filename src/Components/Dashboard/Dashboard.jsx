@@ -8,6 +8,7 @@ import Modal from '@mui/material/Modal';
 import useAuth from "../../Hooks/useAuth";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { ToastContainer, toast } from "react-toastify";
+import Swal from "sweetalert2";
 const style = {
     position: 'absolute',
     top: '50%',
@@ -22,7 +23,7 @@ const style = {
 
 
 const Dashboard = () => {
-    const {user} = useAuth();
+    const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
     const [data, setData] = useState([]);
     const [tasks, refetch] = useTask();
@@ -33,7 +34,7 @@ const Dashboard = () => {
         setOpen(true);
     }
     const handleClose = () => setOpen(false);
-    const { title, deadline, description, priority, _id} = data;
+    const { title, deadline, description, priority, _id } = data;
 
     console.log(data);
 
@@ -50,24 +51,48 @@ const Dashboard = () => {
         event.target.priority.value = "";
         event.target.deadline.value = "";
         const sorting = deadline.split("-").join("");
-        // console.log(deadline.split("-").join(""));
-        
         const updateData = {
             title, description, priority, deadline, sorting
         }
-
         axiosSecure.put(`/update/tasks/${_id}`, updateData)
-        .then(res => {
-            // console.log(res.data);
-            if(res.data.modifiedCount > 0){
-                refetch()
-                toast.success('Update Successful');
-            }
-        })
-
-        // console.log(updateData);
+            .then(res => {
+                if (res.data.modifiedCount > 0) {
+                    refetch()
+                    toast.success('Update Successful');
+                }
+            })
         refetch();
         setOpen(false)
+    }
+
+    const handleDelete = id => {
+        console.log(id);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axiosSecure.delete(`/delete/tasks/${id}`)
+                    .then(res => {
+                        if (res.data.deletedCount > 0) {
+                            // Swal.fire({
+                            //     title: "Deleted!",
+                            //     text: "Your file has been deleted.",
+                            //     icon: "success"
+                            // });
+                            toast.success('Your file has been deleted.')
+                            refetch();
+
+                        }
+                    })
+            }
+        });
+
     }
 
     return (
@@ -89,7 +114,7 @@ const Dashboard = () => {
                     <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                         <div className="border">
                             <h2 className="text-center font-bold text-2xl italic py-4">ToDo List</h2>
-                            <div  className="space-y-5">
+                            <div className="space-y-5">
                                 {
                                     tasks.map(data => <div key={data._id}>
                                         <div draggable className="flex justify-between p-5 bg-slate-500">
@@ -103,12 +128,12 @@ const Dashboard = () => {
                                             <div>
                                                 <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
                                                 <div className="flex justify-center pt-4 items-center gap-5">
-                                                    <button onClick={() => handleOpen(data)}  className="text-xl text-blue-700">
-                                                        <FaEdit/>
+                                                    <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
+                                                        <FaEdit />
                                                     </button>
 
 
-                                                    <button className="text-xl text-purple-700">< RiDeleteBinFill/></button>
+                                                    <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
                                                 </div>
 
                                             </div>
@@ -145,41 +170,41 @@ const Dashboard = () => {
                 >
                     <Box sx={style}>
 
-                    <div className="form-container w-80 lg:w-96">
-                    <form onSubmit={handleSubmit}  className="form">
-                        <div className="form-group">
-                            <label htmlFor="email">Task Title</label>
-                            <input defaultValue={title} className='input999' required name="title" id="email" type="text" />
-                            <br />
+                        <div className="form-container w-80 lg:w-96">
+                            <form onSubmit={handleSubmit} className="form">
+                                <div className="form-group">
+                                    <label htmlFor="email">Task Title</label>
+                                    <input defaultValue={title} className='input999' required name="title" id="email" type="text" />
+                                    <br />
 
-                            <label htmlFor="email">Task Description</label>
-                            <input defaultValue={description} className='input999' required name="description" type="text" />
-                            <br />
+                                    <label htmlFor="email">Task Description</label>
+                                    <input defaultValue={description} className='input999' required name="description" type="text" />
+                                    <br />
 
-                            <label htmlFor="email">Task Priority</label>
+                                    <label htmlFor="email">Task Priority</label>
 
-                            <select defaultValue={priority} className='input999' required name="priority">
-                                <option value="" selected>Select Priority ?</option>
-                                <option value="Low">Low</option>
-                                <option value="moderate">moderate</option>
-                                <option value="High">High</option>
-                            </select>
+                                    <select defaultValue={priority} className='input999' required name="priority">
+                                        <option value="" selected>Select Priority ?</option>
+                                        <option value="Low">Low</option>
+                                        <option value="moderate">moderate</option>
+                                        <option value="High">High</option>
+                                    </select>
 
-                            <br />
-                            <label htmlFor="email">Task Deadline</label>
-                            <input defaultValue={deadline} className='input999' placeholder='dd/mm/yy' required="" name="deadline" id="email" type="date" />
-                        </div>
-
-
+                                    <br />
+                                    <label htmlFor="email">Task Deadline</label>
+                                    <input defaultValue={deadline} className='input999' placeholder='dd/mm/yy' required="" name="deadline" id="email" type="date" />
+                                </div>
 
 
-                        {/* <div className="form-group">
+
+
+                                {/* <div className="form-group">
                             <label htmlFor="textarea">Task Description</label>
                             <textarea defaultValue={description} required cols="50" rows="10" id="textarea" name="description">          </textarea>
                         </div> */}
-                        <button type="submit" className="form-submit-btn">Update</button>
-                    </form>
-                </div>
+                                <button type="submit" className="form-submit-btn">Update</button>
+                            </form>
+                        </div>
                     </Box>
                 </Modal>
             </div>
