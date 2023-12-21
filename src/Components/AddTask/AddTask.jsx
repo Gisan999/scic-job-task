@@ -33,7 +33,7 @@ const AddTask = () => {
 
     return (
         <div>
-            <div className="form-container">
+            <div className="form-container w-80 md:w-96">
                 <form onSubmit={handleSubmit} className="form">
                     <div className="form-group">
                         <label htmlFor="email">Task Title</label>
@@ -55,7 +55,7 @@ const AddTask = () => {
                     </div>
                     <div className="form-group">
                         <label htmlFor="textarea">Task Description</label>
-                        <textarea required cols="50" rows="10" id="textarea" name="description">          </textarea>
+                        <textarea required cols="10" rows="2" id="textarea" name="description">          </textarea>
                     </div>
                     <button type="submit" className="form-submit-btn">Add</button>
                 </form>
