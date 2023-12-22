@@ -1,17 +1,23 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 // import logo from '../../assets/logo.png'
 
 import useAuth from "../../Hooks/useAuth";
+import { ToastContainer, toast } from "react-toastify";
 
 
 const Navbar = ({theme}) => {
     const { user, logOut } = useAuth();
+    const navigate = useNavigate();
 
 
     const handleLogOut = () => {
         logOut()
-        .then()
+        .then(data => {
+            navigate('/')
+            toast.success('Logging Out Successfully')
+        })
         .catch()
     }
 
@@ -123,6 +129,7 @@ const Navbar = ({theme}) => {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link,  useNavigate } from 'react-router-dom';
 // import logo from '../../assets/logo.png'
 // import { AuthContext } from '../../Provider/AuthProvider';
 // import { useContext } from 'react';
@@ -12,7 +12,7 @@ import auth from '../../Firebase/firebase.config';
 
 const Login = () => {
     const { logIn, setLoading } = useAuth();
-    const location = useLocation();
+    // const location = useLocation();
     const navigate = useNavigate();
 
 
@@ -22,11 +22,12 @@ const Login = () => {
 
     const handleGoogle = () => {
         signInWithPopup(auth, provider)
-        .then(result => {
-            console.log(result);
-            navigate(location?.state ? location.state : '/');
-        })
-        .catch(error => console.error(error))
+            .then(result => {
+                console.log(result);
+                // navigate(location?.state ? location.state : '/');
+                navigate('/dashboard');
+            })
+            .catch(error => console.error(error))
     }
 
 
@@ -38,30 +39,31 @@ const Login = () => {
         const password = form.password.value;
         // console.log(email, password);
         logIn(email, password)
-        .then(result => {
-            console.log(result);
-            toast.success('success')
-            navigate(location?.state ? location.state : '/');
+            .then(result => {
+                console.log(result);
+                toast.success('success')
+                navigate('/dashboard');
+                // navigate(location?.state ? location.state : '/');
 
-        })
-        .catch(error => {
-            console.error(error);
-            // toast.error('Email and password do not match')
-            setLoading(false)
-            Swal.fire({
-                position: 'top-right',
-                title: `email and password dose not match`,
-                icon: 'warning',
-                showConfirmButton: false,
-                timer: 2000
             })
-        })
+            .catch(error => {
+                console.error(error);
+                // toast.error('Email and password do not match')
+                setLoading(false)
+                Swal.fire({
+                    position: 'top-right',
+                    title: `email and password dose not match`,
+                    icon: 'warning',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            })
     }
 
     return (
         <div>
             <div>
-              
+
                 <div className=" bg-gray-100 text-gray-900 flex justify-center py-10">
                     <div className="container m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
                         <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
@@ -107,38 +109,38 @@ const Login = () => {
                                     </div>
 
                                     <div className="mx-auto max-w-xs">
-                                        
-                                       <form onSubmit={handleLoginValue}>
 
-                                       <input
-                                            className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                                            type="email" 
-                                            name='email'
-                                            placeholder="Email" />
-                                        <input
-                                            className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-                                            type="password" 
-                                            name='password'
-                                            placeholder="Password" />
-                                        <button
-                                            className="mt-5 tracking-wide font-semibold bg-green-400 text-white-500 w-full py-4 rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-                                            <svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2"
-                                                strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                                                <circle cx="8.5" cy="7" r="4" />
-                                                <path d="M20 8v6M23 11h-6" />
-                                            </svg>
-                                            <span className="ml-">
-                                                Sign In
-                                            </span>
-                                        </button>
+                                        <form onSubmit={handleLoginValue}>
 
-                                       </form>
+                                            <input
+                                                className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                                                type="email"
+                                                name='email'
+                                                placeholder="Email" />
+                                            <input
+                                                className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                                                type="password"
+                                                name='password'
+                                                placeholder="Password" />
+                                            <button
+                                                className="mt-5 tracking-wide font-semibold bg-green-400 text-white-500 w-full py-4 rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+                                                <svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2"
+                                                    strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                                    <circle cx="8.5" cy="7" r="4" />
+                                                    <path d="M20 8v6M23 11h-6" />
+                                                </svg>
+                                                <span className="ml-">
+                                                    Sign In
+                                                </span>
+                                            </button>
+
+                                        </form>
 
 
                                         <p className="mt-6  text-gray-600 text-center">
-                                        You don`t have an account. <br />
-                                         <Link className='text-lg font-medium text-blue-500 hover:underline' to={"/registration"}>Registration</Link>
+                                            You don`t have an account. <br />
+                                            <Link className='text-lg font-medium text-blue-500 hover:underline' to={"/registration"}>Registration</Link>
                                         </p>
                                     </div>
                                 </div>
@@ -146,14 +148,14 @@ const Login = () => {
                         </div>
                         <div className="flex-1 bg-green-100 text-center hidden lg:flex">
                             <div className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
-                                style={{backgroundImage: `url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')`}}>
+                                style={{ backgroundImage: `url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')` }}>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <ToastContainer/>
+
+            <ToastContainer />
         </div>
     );
 };

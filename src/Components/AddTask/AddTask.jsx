@@ -18,8 +18,10 @@ const AddTask = () => {
         event.target.priority.value = "";
         event.target.deadline.value = "";
         const sorting = deadline.split("-").join("");
+        const status = { status: 'null' }
+
         const taskData = {
-            title, description, priority, deadline, email: user.email, sorting
+            title, description, status, priority, deadline, email: user.email, sorting
         }
         axiosSecure.post('/set/tasks', taskData)
             .then(res => {
@@ -29,6 +31,9 @@ const AddTask = () => {
                 }
             })
     }
+
+    // const status= { status: 'null' }
+    // console.log(status.status);
 
     return (
         <div>

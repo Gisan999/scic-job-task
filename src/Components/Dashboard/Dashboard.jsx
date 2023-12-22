@@ -1,42 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useTask from "../../Hooks/useTask";
 import AddTask from "../AddTask/AddTask";
 import { FaEdit, FaRegCalendarAlt } from "react-icons/fa";
 import { RiDeleteBinFill } from "react-icons/ri";
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import useAuth from "../../Hooks/useAuth";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { ToastContainer, toast } from "react-toastify";
 import Swal from "sweetalert2";
+// import { useQuery } from "@tanstack/react-query";
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-
-    // bgcolor: 'background.paper',
-    // border: '2px solid #000',
-    // boxShadow: 24,
-    // p: 4,
 };
 
 
 const Dashboard = () => {
-    const { user } = useAuth();
+    // const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
     const [data, setData] = useState([]);
     const [tasks, refetch] = useTask();
+    // const [tasks, setTasks] = useState([]);
     const [open, setOpen] = React.useState(false);
+
+    const [todoList, setTodoList] = useState([]);
+    const [ongoingList, setOngoingList] = useState([]);
+    const [completedList, setCompletedList] = useState([]);
+
+
     const handleOpen = (data) => {
-        // console.log(data);
         setData(data)
         setOpen(true);
     }
     const handleClose = () => setOpen(false);
     const { title, deadline, description, priority, _id } = data;
-
-    console.log(data);
+    useEffect(()=>{
+        const remaining = tasks.filter(data => data.status.status === 'null')
+        setTodoList(remaining);
+        const ongo = tasks.filter(data => data.status.status === "Ongoing");
+        setOngoingList(ongo);
+        // console.log(ongo);
+        const com = tasks.filter(data => data.status.status === "Completed");
+        // console.log(tasks);
+        setCompletedList(com);
+    },[tasks])
+    
 
 
     const handleSubmit = event => {
@@ -87,43 +97,80 @@ const Dashboard = () => {
                             // });
                             toast.success('Your file has been deleted.')
                             refetch();
-
                         }
                     })
             }
         });
-
     }
 
+    const dragStarted = (e, data) => {
+        // console.log('Drag has started', data);
+        e.dataTransfer.setData('todoId', JSON.stringify({ taskId: data._id, status: data.status }));
+    }
+
+    const draggingOver = (e) => {
+        e.preventDefault();
+        console.log('Dragging over now');
+    }
+
+    const dragDropped = (e, status) => {
+        e.preventDefault();
+        // console.log('you have dropped', status);
+
+        const droppedTask = JSON.parse(e.dataTransfer.getData('todoId'));
+
+        // const updatedTasks = tasks.filter((task) => task._id !== droppedTask._id);
+        // console.log(updatedTasks);
+        // console.log(droppedTask.taskId);
+
+        const status2 = { status }
+
+        axiosSecure.patch(`/tasks/innerUpdate/${droppedTask.taskId}`, status2)
+            .then(res => {
+                console.log(res.data);
+                if (res.data.modifiedCount > 0) {
+                    refetch();
+                }
+            })
+        droppedTask.status = status;
+        const todo = tasks.filter(data => data.status.status === "null");
+        setTodoList(todo);
+        // console.log(todo);
+        // console.log(tasks);
+
+    }
+    // console.log(Array.isArray(ongoingList));
     return (
         <div>
 
-            <div className="dropdown dropdown-right dropdown-bottom">
+          <div className="flex justify-center py-9">
+          <div className="dropdown md:dropdown-right dropdown-bottom">
                 <label tabIndex={1} className="">
-                    <div className="w-10 rounded-full">
-                        <h2 className="text-center text-5xl ">hello</h2>
+                    <div className="">
+                        <h2 className="text-center btn w-full btn-outline btn-info px-32 ">Add Task</h2>
                     </div>
                 </label>
                 <div tabIndex={1} className="dropdown-content">
                     <AddTask />
                 </div>
             </div>
+          </div>
 
             <div>
                 <div className="container mx-auto my-12 px-5 lg:px-0">
+
+
                     <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                         <div className="border">
                             <h2 className="text-center font-bold text-2xl italic py-4">ToDo List</h2>
                             <div className="space-y-5">
                                 {
-                                    tasks.map(data => <div key={data._id}>
-                                        <div draggable className="flex justify-between p-5 bg-slate-500">
+                                    todoList.map((data, idx) =>
+                                        <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-slate-500">
                                             <div>
                                                 <h1 className="text-lg font-bold">{data.title}</h1>
                                                 <h3>{data.description}</h3>
                                                 <h5 className="font-medium flex gap-2 items-center">Deadline:-  <FaRegCalendarAlt /> {data.deadline}</h5>
-
-
                                             </div>
                                             <div>
                                                 <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
@@ -131,32 +178,70 @@ const Dashboard = () => {
                                                     <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
                                                         <FaEdit />
                                                     </button>
-
-
                                                     <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
                                                 </div>
-
                                             </div>
                                         </div>
+                                    )
 
-                                    </div>)
                                 }
                             </div>
                         </div>
 
-
-
-                        <div className="border">
+                        <div onDragOver={(e) => draggingOver(e)} onDrop={(e) => dragDropped(e, 'Ongoing')} className="border">
                             <h2 className="text-center font-bold text-2xl italic py-4">Ongoing List</h2>
+                            <div className="space-y-5">
+                                {ongoingList.map((data, idx) => (
+                                    <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-slate-500">
+                                        <div>
+                                            <h1 className="text-lg font-bold">{data.title}</h1>
+                                            <h3>{data.description}</h3>
+                                            <h5 className="font-medium flex gap-2 items-center">Deadline:-  <FaRegCalendarAlt /> {data.deadline}</h5>
+                                        </div>
+                                        <div>
+                                            <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
+                                            <div className="flex justify-center pt-4 items-center gap-5">
+                                                <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
+                                                    <FaEdit />
+                                                </button>
+                                                <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
 
                         </div>
 
 
-                        <div className="border">
-                            <h2 className="text-center font-bold text-2xl italic py-4">Complete List</h2>
+                        <div onDragOver={(e) => draggingOver(e)} onDrop={(e) => dragDropped(e, 'Completed')} className="border">
+                            <h2 className="text-center font-bold text-2xl italic py-4">Completed List</h2>
+                            <div className="space-y-5">
+                                {completedList.map((data, idx) => (
+                                    <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-slate-500">
+                                        <div>
+                                            <h1 className="text-lg font-bold">{data.title}</h1>
+                                            <h3>{data.description}</h3>
+                                            <h5 className="font-medium flex gap-2 items-center">Deadline:-  <FaRegCalendarAlt /> {data.deadline}</h5>
+                                        </div>
+                                        <div>
+                                            <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
+                                            <div className="flex justify-center pt-4 items-center gap-5">
+                                                <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
+                                                    <FaEdit />
+                                                </button>
+                                                <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
 
                         </div>
                     </div>
+
+
+
                 </div>
             </div>
 
@@ -194,14 +279,6 @@ const Dashboard = () => {
                                     <label htmlFor="email">Task Deadline</label>
                                     <input defaultValue={deadline} className='input999' placeholder='dd/mm/yy' required="" name="deadline" id="email" type="date" />
                                 </div>
-
-
-
-
-                                {/* <div className="form-group">
-                            <label htmlFor="textarea">Task Description</label>
-                            <textarea defaultValue={description} required cols="50" rows="10" id="textarea" name="description">          </textarea>
-                        </div> */}
                                 <button type="submit" className="form-submit-btn">Update</button>
                             </form>
                         </div>
