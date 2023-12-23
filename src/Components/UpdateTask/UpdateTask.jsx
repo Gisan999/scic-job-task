@@ -38,23 +38,20 @@ const UpdateTask = ({task}) => {
                             <label htmlFor="email">Task Title</label>
                             <input defaultValue={title} className='input999' required name="title" id="email" type="text" />
                             <br />
-
                             <label htmlFor="email">Task Priority</label>
-
                             <select defaultValue={priority} className='input999' required name="priority">
                                 <option value="" selected>Select Priority ?</option>
                                 <option value="Low">Low</option>
                                 <option value="moderate">moderate</option>
                                 <option value="High">High</option>
                             </select>
-
                             <br />
                             <label htmlFor="email">Task Deadline</label>
                             <input defaultValue={deadline} className='input999' placeholder='dd/mm/yy' required="" name="deadline" id="email" type="date" />
                         </div>
                         <div className="form-group">
                             <label htmlFor="textarea">Task Description</label>
-                            <textarea defaultValue={description} required cols="50" rows="10" id="textarea" name="description">          </textarea>
+                            <textarea  defaultValue={description} required cols="50" rows="10" id="textarea" name="description">          </textarea>
                         </div>
                         <button type="submit" className="form-submit-btn">Update</button>
                     </form>

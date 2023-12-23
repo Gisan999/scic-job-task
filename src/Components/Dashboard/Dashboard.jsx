@@ -8,14 +8,12 @@ import Modal from '@mui/material/Modal';
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { ToastContainer, toast } from "react-toastify";
 import Swal from "sweetalert2";
-// import { useQuery } from "@tanstack/react-query";
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
 };
-
 
 const Dashboard = () => {
     // const { user } = useAuth();
@@ -36,17 +34,15 @@ const Dashboard = () => {
     }
     const handleClose = () => setOpen(false);
     const { title, deadline, description, priority, _id } = data;
-    useEffect(()=>{
+    useEffect(() => {
         const remaining = tasks.filter(data => data.status.status === 'null')
         setTodoList(remaining);
         const ongo = tasks.filter(data => data.status.status === "Ongoing");
         setOngoingList(ongo);
-        // console.log(ongo);
         const com = tasks.filter(data => data.status.status === "Completed");
-        // console.log(tasks);
         setCompletedList(com);
-    },[tasks])
-    
+    }, [tasks])
+
 
 
     const handleSubmit = event => {
@@ -119,10 +115,6 @@ const Dashboard = () => {
 
         const droppedTask = JSON.parse(e.dataTransfer.getData('todoId'));
 
-        // const updatedTasks = tasks.filter((task) => task._id !== droppedTask._id);
-        // console.log(updatedTasks);
-        // console.log(droppedTask.taskId);
-
         const status2 = { status }
 
         axiosSecure.patch(`/tasks/innerUpdate/${droppedTask.taskId}`, status2)
@@ -142,20 +134,22 @@ const Dashboard = () => {
     }
     // console.log(Array.isArray(ongoingList));
     return (
-        <div className="bg-gray-900 py-6">
+        <div className="bg-gray-900 py-6 ">
 
-          <div className="flex justify-center py-9">
-          <div className="dropdown md:dropdown-right dropdown-bottom">
-                <label tabIndex={1} className="">
-                    <div className="">
-                        <h2 className="text-center btn w-full btn-outline btn-info px-32 ">Add Task</h2>
+            <div className="flex justify-center py-9">
+                <div className="dropdown dropdown-bottom">
+                    <label tabIndex={1} className="">
+                        <div className="">
+                            <h2 className="text-center btn w-full btn-outline btn-info px-12 lg:px-32 ">Click Here To Add Your Task</h2>
+                        </div>
+                    </label>
+                    <div tabIndex={1} className="dropdown-content">
+                        <div className="z-50">
+                            <AddTask />
+                        </div>
                     </div>
-                </label>
-                <div tabIndex={1} className="dropdown-content">
-                    <AddTask />
                 </div>
             </div>
-          </div>
 
             <div>
                 <div className="container mx-auto my-12 px-5 lg:px-0">
@@ -164,20 +158,49 @@ const Dashboard = () => {
                     <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                         <div className="">
 
-                           <div className="bg-red-200">
-                           <h2 className="text-center font-bold text-2xl italic py-4">ToDo List</h2>
-                            <hr />
-                            <hr />
-                            <div className="space-y-5 pt-5 p-3">
-                                {
-                                    todoList.map((data, idx) =>
-                                        <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-red-500">
+                            <div className="bg-red-200 ">
+                                <h2 className="text-center font-bold text-2xl italic py-4">ToDo List</h2>
+                                <hr />
+                                <hr />
+                                <div className="space-y-5 pt-5 p-3">
+                                    {
+                                        todoList.map((data, idx) =>
+                                            <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-red-500">
+                                                <div>
+                                                    <h1 className="text-lg font-bold">{data.title}</h1>
+                                                    <h3>{data.description}</h3>
+                                                    <h5 className="font-medium flex gap-2 items-center">Deadline:-  <FaRegCalendarAlt /> {data.deadline}</h5>
+                                                </div>
+                                                <div >
+                                                    <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
+                                                    <div className="flex justify-center pt-4 items-center gap-5">
+                                                        <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
+                                                            <FaEdit />
+                                                        </button>
+                                                        <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div onDragOver={(e) => draggingOver(e)} onDrop={(e) => dragDropped(e, 'Ongoing')}>
+                            <div className="bg-yellow-200">
+                                <h2 className="text-center font-bold text-2xl italic py-4">Ongoing List</h2>
+                                <hr />
+                                <hr />
+                                <div className="space-y-5 pt-5 p-3">
+                                    {ongoingList.map((data, idx) => (
+                                        <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-yellow-500">
                                             <div>
                                                 <h1 className="text-lg font-bold">{data.title}</h1>
                                                 <h3>{data.description}</h3>
                                                 <h5 className="font-medium flex gap-2 items-center">Deadline:-  <FaRegCalendarAlt /> {data.deadline}</h5>
                                             </div>
-                                            <div>
+                                            <div >
                                                 <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
                                                 <div className="flex justify-center pt-4 items-center gap-5">
                                                     <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
@@ -187,76 +210,41 @@ const Dashboard = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                    )
-
-                                }
+                                    ))}
+                                </div>
                             </div>
-                            
-                           </div>
-                        </div>
-
-                        <div onDragOver={(e) => draggingOver(e)} onDrop={(e) => dragDropped(e, 'Ongoing')}>
-                          <div className="bg-yellow-200">
-                          <h2 className="text-center font-bold text-2xl italic py-4">Ongoing List</h2>
-                            <hr />
-                            <hr />
-                            <div className="space-y-5 pt-5 p-3">
-                                {ongoingList.map((data, idx) => (
-                                    <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-yellow-500">
-                                        <div>
-                                            <h1 className="text-lg font-bold">{data.title}</h1>
-                                            <h3>{data.description}</h3>
-                                            <h5 className="font-medium flex gap-2 items-center">Deadline:-  <FaRegCalendarAlt /> {data.deadline}</h5>
-                                        </div>
-                                        <div>
-                                            <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
-                                            <div className="flex justify-center pt-4 items-center gap-5">
-                                                <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
-                                                    <FaEdit />
-                                                </button>
-                                                <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                          </div>
-
                         </div>
 
 
                         <div onDragOver={(e) => draggingOver(e)} onDrop={(e) => dragDropped(e, 'Completed')} >
-                           <div className="bg-green-200">
-                           <h2 className="text-center font-bold text-2xl italic py-4">Completed List</h2>
-                            <hr />
-                            <hr />
-                            <div className="space-y-5 pt-5 p-3">
-                                {completedList.map((data, idx) => (
-                                    <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-green-500">
-                                        <div>
-                                            <h1 className="text-lg font-bold">{data.title}</h1>
-                                            <h3>{data.description}</h3>
-                                            <h5 className="font-medium flex gap-2 items-center">Deadline:-  <FaRegCalendarAlt /> {data.deadline}</h5>
-                                        </div>
-                                        <div>
-                                            <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
-                                            <div className="flex justify-center pt-4 items-center gap-5">
-                                                <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
-                                                    <FaEdit />
-                                                </button>
-                                                <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
+                            <div className="bg-green-200">
+                                <h2 className="text-center font-bold text-2xl italic py-4">Completed List</h2>
+                                <hr />
+                                <hr />
+                                <div className="space-y-5 pt-5 p-3">
+                                    {completedList.map((data, idx) => (
+                                        <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-green-500">
+                                            <div>
+                                                <h1 className="text-lg font-bold">{data.title}</h1>
+                                                <h3>{data.description}</h3>
+                                                <h5 className="font-medium flex gap-2 items-center">Deadline:-  <FaRegCalendarAlt /> {data.deadline}</h5>
+                                            </div>
+                                            <div   >
+                                                <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
+                                                <div className="flex justify-center pt-4 items-center gap-5">
+                                                    <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                           </div>
 
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
 

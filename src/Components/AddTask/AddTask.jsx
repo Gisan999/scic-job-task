@@ -2,6 +2,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import useAuth from '../../Hooks/useAuth';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
 import './AddTask.css'
+// import { useState } from 'react';
 const AddTask = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
@@ -30,6 +31,7 @@ const AddTask = () => {
                     toast.success('Task Added Successful');
                 }
             })
+          
     }
 
     // const status= { status: 'null' }
@@ -59,7 +61,7 @@ const AddTask = () => {
                     </div>
                     <div className="form-group">
                         <label htmlFor="textarea">Task Description</label>
-                        <textarea required cols="10" rows="2" id="textarea" name="description">          </textarea>
+                        <textarea  required cols="10" rows="2" id="textarea" name="description">          </textarea>
                     </div>
                     <button type="submit" className="form-submit-btn">Add</button>
                 </form>

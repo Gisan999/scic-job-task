@@ -1,8 +1,13 @@
 import { FaRegCalendarAlt } from "react-icons/fa";
 import useTask from "../../Hooks/useTask";
-
+import Aos from 'aos';
+import 'aos/dist/aos.css'
+import { useEffect } from "react";
 
 const MyTask = () => {
+    useEffect(() => {
+        Aos.init();
+    }, [])
     const [tasks] = useTask();
     console.log(tasks);
     return (
@@ -11,18 +16,15 @@ const MyTask = () => {
 
                 <div className="flex justify-between">
                     <h2 className="text-4xl text-rose-100 font-semibold uppercase">Total Tasks: </h2>
-
-
-
                 </div>
-
-                <div className="overflow-x-auto">
+                <div data-aos="fade-down"
+                    data-aos-easing="linear"
+                    data-aos-duration="1500" className="overflow-x-auto">
                     <table className="table mt-5">
                         <thead>
                             <tr className="bg-purple-600 text-white text-base">
                                 <th>
                                     <label>
-
                                     </label>
                                 </th>
                                 <th>NAME</th>

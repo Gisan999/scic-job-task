@@ -1,55 +1,43 @@
 // import { useState } from 'react'
+// import { Card } from '@mui/material';
 import './App.css'
 import Banner from './Components/Banner/Banner'
-
-
+import Marquee from "react-fast-marquee";
+import Card from './Components/Card/Card';
+import Aos from 'aos';
+import 'aos/dist/aos.css'
+import { useEffect } from 'react';
 function App() {
-  // const [data, setData] = useState(null);
-
-  // const dragStarted = (e, id) => {
-  //   console.log('Drag has started');
-  //   e.dataTransfer.setData("todoId", id)
-
-  // }
-
-  // const draggingOver = (e) => {
-  //   e.preventDefault();
-  //   console.log('dragging over now');
-  // }
-
-  // const dragDrope = (e) => {
-  //   console.log('you have dropped');
-  // }
-
+  useEffect(() => {
+    Aos.init();
+  }, [])
   return (
     <>
-      {/* <h1 className='text-5xl font-bold font-serif uppercase underline'>Vite + React</h1> */}
-<Banner/>
+<div data-aos="fade-down"
+                    data-aos-easing="linear"
+                    data-aos-duration="1500">
 
-      {/* 
-      <div className='grid grid-cols-3 gap-5'>
-
-
-        <div className='border h-96'>
-
-          <div draggable onDragStart={(e) => dragStarted(e)} className='border flex justify-around p-3'>
-
-            <h2 className='py-5'>hello</h2>
-            <h2 className='py-5'>mr</h2>
+      <Banner />
+</div>
+      <div>
+        <div className='bg-gray-900'>
+          <div className='py-20 '>
+            <h2 className='text-3xl lg:text-5xl text-center font-bold italic uppercase font-serif text-blue-300 pb-20'>Who is utilizing this website?</h2>
+            <Marquee pauseOnHover speed={100} >
+             <div data-aos="fade-up" className='flex gap-9 lg:gap-20  pl-8 lg:pl-0'>
             
+             <Card  name={'Programmers'} title={'Connect with programmers, showcase skills, and collaborate on projects in our coding community. Whether you`re seasoned or just starting, join for networking and collaborative opportunities.'}/>
+             <Card name={'Bankers'} title={'Connect with fellow bankers, showcase expertise, and foster collaboration in our professional community dedicated to financial professionals networking and growth'}/>
+             <Card name={'Project Managers'} title={'Empower your projects with our platform for project managers. Streamline tasks, foster team collaboration, and achieve successful project outcomes.'}/>
+             <Card name={'Developer'} title={'Join our platform for software developers. Collaborate on projects, share insights, and connect with a vibrant community driving innovation in coding.'}/>
+             <Card name={'corporations'} title={'Connect with businesses and corporations on our platform. Streamline collaboration, network with industry peers, and drive growth together.'}/>
+             <Card name={'Students'} title={'Unite remote teams effortlessly on our platform. Foster collaboration, enhance communication, and achieve collective success from anywhere'}/>
+             </div>
+            </Marquee>
           </div>
-
         </div>
+      </div>
 
-
-        <div onDragOver={(e)=>draggingOver(e)} onDrop={(e)=>dragDrope(e)} className='border h-96'>
-          <h2 className='text-center text-2xl font-medium'>In Progress</h2>
-        </div>
-
-
-        <div className='border h-96'>
-        </div>
-      </div> */}
     </>
   )
 }
