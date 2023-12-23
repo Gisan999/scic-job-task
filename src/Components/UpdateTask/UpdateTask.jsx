@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import useAuth from "../../Hooks/useAuth";
-import useAxiosSecure from "../../Hooks/useAxiosSecure";
+// import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const UpdateTask = ({task}) => {
 
     const { user } = useAuth();
-    const axiosSecure = useAxiosSecure();
+    // const axiosSecure = useAxiosSecure();
     
     const {title, description, deadline, priority} = task;
     

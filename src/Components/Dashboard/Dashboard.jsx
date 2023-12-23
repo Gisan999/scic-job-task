@@ -130,6 +130,7 @@ const Dashboard = () => {
                 console.log(res.data);
                 if (res.data.modifiedCount > 0) {
                     refetch();
+                    toast.success(`Your Task Now ${status}`)
                 }
             })
         droppedTask.status = status;
@@ -141,7 +142,7 @@ const Dashboard = () => {
     }
     // console.log(Array.isArray(ongoingList));
     return (
-        <div>
+        <div className="bg-gray-900 py-6">
 
           <div className="flex justify-center py-9">
           <div className="dropdown md:dropdown-right dropdown-bottom">
@@ -161,12 +162,16 @@ const Dashboard = () => {
 
 
                     <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                        <div className="border">
-                            <h2 className="text-center font-bold text-2xl italic py-4">ToDo List</h2>
-                            <div className="space-y-5">
+                        <div className="">
+
+                           <div className="bg-red-200">
+                           <h2 className="text-center font-bold text-2xl italic py-4">ToDo List</h2>
+                            <hr />
+                            <hr />
+                            <div className="space-y-5 pt-5 p-3">
                                 {
                                     todoList.map((data, idx) =>
-                                        <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-slate-500">
+                                        <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-red-500">
                                             <div>
                                                 <h1 className="text-lg font-bold">{data.title}</h1>
                                                 <h3>{data.description}</h3>
@@ -186,13 +191,18 @@ const Dashboard = () => {
 
                                 }
                             </div>
+                            
+                           </div>
                         </div>
 
-                        <div onDragOver={(e) => draggingOver(e)} onDrop={(e) => dragDropped(e, 'Ongoing')} className="border">
-                            <h2 className="text-center font-bold text-2xl italic py-4">Ongoing List</h2>
-                            <div className="space-y-5">
+                        <div onDragOver={(e) => draggingOver(e)} onDrop={(e) => dragDropped(e, 'Ongoing')}>
+                          <div className="bg-yellow-200">
+                          <h2 className="text-center font-bold text-2xl italic py-4">Ongoing List</h2>
+                            <hr />
+                            <hr />
+                            <div className="space-y-5 pt-5 p-3">
                                 {ongoingList.map((data, idx) => (
-                                    <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-slate-500">
+                                    <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-yellow-500">
                                         <div>
                                             <h1 className="text-lg font-bold">{data.title}</h1>
                                             <h3>{data.description}</h3>
@@ -210,15 +220,19 @@ const Dashboard = () => {
                                     </div>
                                 ))}
                             </div>
+                          </div>
 
                         </div>
 
 
-                        <div onDragOver={(e) => draggingOver(e)} onDrop={(e) => dragDropped(e, 'Completed')} className="border">
-                            <h2 className="text-center font-bold text-2xl italic py-4">Completed List</h2>
-                            <div className="space-y-5">
+                        <div onDragOver={(e) => draggingOver(e)} onDrop={(e) => dragDropped(e, 'Completed')} >
+                           <div className="bg-green-200">
+                           <h2 className="text-center font-bold text-2xl italic py-4">Completed List</h2>
+                            <hr />
+                            <hr />
+                            <div className="space-y-5 pt-5 p-3">
                                 {completedList.map((data, idx) => (
-                                    <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-slate-500">
+                                    <div key={idx} draggable="true" onDragStart={(e) => dragStarted(e, data)} className="flex justify-between p-5 bg-green-500">
                                         <div>
                                             <h1 className="text-lg font-bold">{data.title}</h1>
                                             <h3>{data.description}</h3>
@@ -236,6 +250,7 @@ const Dashboard = () => {
                                     </div>
                                 ))}
                             </div>
+                           </div>
 
                         </div>
                     </div>

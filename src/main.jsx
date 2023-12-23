@@ -14,6 +14,7 @@ import Registration from './Components/Registration/Registration.jsx';
 import AddTask from './Components/AddTask/AddTask.jsx';
 import Dashboard from './Components/Dashboard/Dashboard.jsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import MyTask from './Components/MyTask/MyTask.jsx';
 
 const queryClient = new QueryClient()
 
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <Dashboard />
+      },
+      {
+        path: "/myTask",
+        element: <MyTask />
       }
     ]
   },

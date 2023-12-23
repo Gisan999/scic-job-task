@@ -33,7 +33,7 @@ const Navbar = ({theme}) => {
         </li>
 
         <li>   <NavLink
-            to="/"
+            to="/myTask"
             className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? " text-blue-500 font-bold" : ""
             }
@@ -41,17 +41,17 @@ const Navbar = ({theme}) => {
             My Tasks
         </NavLink></li>
 
-        <li>   <NavLink
-            to="/dashboard"
-            className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "text-blue-500 font-bold " : ""
-            }
-        >
-           Dashboard
-        </NavLink></li>
+      
 
      {
-        user ?     '' : <li>   <NavLink
+        user ?       <li>   <NavLink
+        to="/dashboard"
+        className={({ isActive, isPending }) =>
+            isPending ? "pending" : isActive ? "text-blue-500 font-bold " : ""
+        }
+    >
+       Dashboard
+    </NavLink></li> : <li>   <NavLink
         to="/login"
         className={({ isActive, isPending }) =>
             isPending ? "pending" : isActive ? "active" : ""
