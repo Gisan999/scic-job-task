@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useTask from "../../Hooks/useTask";
-import AddTask from "../AddTask/AddTask";
+// import AddTask from "../AddTask/AddTask";
 import { FaEdit, FaRegCalendarAlt } from "react-icons/fa";
 import { RiDeleteBinFill } from "react-icons/ri";
 import Box from '@mui/material/Box';
@@ -8,6 +8,7 @@ import Modal from '@mui/material/Modal';
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { ToastContainer, toast } from "react-toastify";
 import Swal from "sweetalert2";
+import useAuth from "../../Hooks/useAuth";
 const style = {
     position: 'absolute',
     top: '50%',
@@ -16,9 +17,10 @@ const style = {
 };
 
 const Dashboard = () => {
-    // const { user } = useAuth();
+    const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
     const [data, setData] = useState([]);
+    const [datas, setDatas] = useState('');
     const [tasks, refetch] = useTask();
     // const [tasks, setTasks] = useState([]);
     const [open, setOpen] = React.useState(false);
@@ -27,11 +29,15 @@ const Dashboard = () => {
     const [ongoingList, setOngoingList] = useState([]);
     const [completedList, setCompletedList] = useState([]);
 
+    const add = 'add';
+    const upp = 'upp';
 
-    const handleOpen = (data) => {
+    const handleOpen = (data, xxx) => {
         setData(data)
+        setDatas(xxx)
         setOpen(true);
     }
+    console.log(datas);
     const handleClose = () => setOpen(false);
     const { title, deadline, description, priority, _id } = data;
     useEffect(() => {
@@ -42,6 +48,40 @@ const Dashboard = () => {
         const com = tasks.filter(data => data.status.status === "Completed");
         setCompletedList(com);
     }, [tasks])
+
+
+
+    const handleAdd = event => {
+        event.preventDefault();
+        const form = event.target;
+        const title = form.title.value;
+        const description = form.description.value;
+        const priority = form.priority.value;
+        const deadline = form.deadline.value;
+        event.target.title.value = "";
+        event.target.description.value = "";
+        event.target.priority.value = "";
+        event.target.deadline.value = "";
+        const sorting = deadline.split("-").join("");
+        const status = { status: 'null' }
+
+        const taskData = {
+            title, description, status, priority, deadline, email: user.email, sorting
+        }
+        axiosSecure.post('/set/tasks', taskData)
+            .then(res => {
+                if (res.data.acknowledged === true) {
+                    // window.location.replace(false);
+                    // navigate('/myTask')
+                    // navigate('/dashboard')
+                    handleClose();
+                    refetch();
+                    toast.success('Task Added Successful');
+                }
+            })
+
+    }
+
 
 
 
@@ -137,18 +177,18 @@ const Dashboard = () => {
         <div className="bg-gray-900 py-6 ">
 
             <div className="flex justify-center py-9">
-                <div className="dropdown dropdown-bottom">
-                    <label tabIndex={1} className="">
                         <div className="">
-                            <h2 className="text-center btn w-full btn-outline btn-info px-12 lg:px-32 ">Click Here To Add Your Task</h2>
+                            <h2 onClick={() => handleOpen(data, add)} className="text-center btn w-full btn-outline btn-info px-12 lg:px-32 ">Click Here To Add Your Task</h2>
                         </div>
+                {/* <div className="dropdown dropdown-bottom">
+                    <label tabIndex={1} className="">
                     </label>
                     <div tabIndex={1} className="dropdown-content">
                         <div className="z-50">
                             <AddTask />
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div>
@@ -173,18 +213,23 @@ const Dashboard = () => {
                                                 </div>
                                                 <div >
                                                     <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
-                                                    <div className="flex justify-center pt-4 items-center gap-5">
-                                                        <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
+                                                  <div>
+                                                  <div className="flex justify-center pt-4 items-center gap-5">
+                                                        <button onClick={() => handleOpen(data, upp)} className="text-xl text-blue-700">
                                                             <FaEdit />
                                                         </button>
                                                         <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
                                                     </div>
+                                                  </div>
                                                 </div>
                                             </div>
                                         )
                                     }
                                 </div>
                             </div>
+                                <div className={`${todoList.length ? 'hidden' : 'block'}`}>
+                                    <h2 className="text-2xl text-white font-bold italic font-serif uppercase text-center py-20">Add Your Work</h2>
+                                </div>
                         </div>
 
                         <div onDragOver={(e) => draggingOver(e)} onDrop={(e) => dragDropped(e, 'Ongoing')}>
@@ -202,12 +247,14 @@ const Dashboard = () => {
                                             </div>
                                             <div >
                                                 <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
-                                                <div className="flex justify-center pt-4 items-center gap-5">
-                                                    <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
+                                               <div>
+                                               <div className="flex justify-center pt-4 items-center gap-5">
+                                                    <button onClick={() => handleOpen(data, upp)} className="text-xl text-blue-700">
                                                         <FaEdit />
                                                     </button>
                                                     <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
                                                 </div>
+                                               </div>
                                             </div>
                                         </div>
                                     ))}
@@ -231,12 +278,14 @@ const Dashboard = () => {
                                             </div>
                                             <div   >
                                                 <h1><span className="text-base font-semibold">Priority:</span> {data.priority}</h1>
-                                                <div className="flex justify-center pt-4 items-center gap-5">
-                                                    <button onClick={() => handleOpen(data)} className="text-xl text-blue-700">
+                                              <div>
+                                              <div className="flex justify-center pt-4 items-center gap-5">
+                                                    <button onClick={() => handleOpen(data, upp)} className="text-xl text-blue-700">
                                                         <FaEdit />
                                                     </button>
                                                     <button onClick={() => handleDelete(data._id)} className="text-xl text-purple-700">< RiDeleteBinFill /></button>
                                                 </div>
+                                              </div>
                                             </div>
                                         </div>
                                     ))}
@@ -258,6 +307,38 @@ const Dashboard = () => {
                 >
                     <Box sx={style}>
 
+                        {
+                            datas === 'add' ?
+                            
+                            <div className="form-container w-80 md:w-96">
+                            <form onSubmit={handleAdd} className="form">
+                                <div className="form-group">
+                                    <label htmlFor="email">Task Title</label>
+                                    <input placeholder="Title" className='input999' required name="title" id="email" type="text" />
+                                    <br />
+            
+                                    <label htmlFor="email">Task Priority</label>
+            
+                                    <select className='input999' required name="priority">
+                                        <option value="" disabled selected>Select Priority ?</option>
+                                        <option value="Low">Low</option>
+                                        <option value="moderate">moderate</option>
+                                        <option value="High">High</option>
+                                    </select>
+            
+                                    <br />
+                                    <label htmlFor="email">Task Deadline</label>
+                                    <input className='input999' placeholder='dd/mm/yy' required name="deadline" id="email" type="date" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="textarea">Task Description</label>
+                                    <textarea placeholder="Description" required cols="10" rows="2" id="textarea" name="description">          </textarea>
+                                </div>
+                                <button  type="submit" className="form-submit-btn">Add</button>
+                            </form>
+                        </div>
+                             : 
+                            
                         <div className="form-container w-80 lg:w-96">
                             <form onSubmit={handleSubmit} className="form">
                                 <div className="form-group">
@@ -285,6 +366,11 @@ const Dashboard = () => {
                                 <button type="submit" className="form-submit-btn">Update</button>
                             </form>
                         </div>
+                        }
+
+
+
+
                     </Box>
                 </Modal>
             </div>

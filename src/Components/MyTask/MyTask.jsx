@@ -3,6 +3,7 @@ import useTask from "../../Hooks/useTask";
 import Aos from 'aos';
 import 'aos/dist/aos.css'
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const MyTask = () => {
     useEffect(() => {
@@ -54,6 +55,28 @@ const MyTask = () => {
 
                         </tbody>
                     </table>
+
+<div className={`${tasks.length ?  'hidden': 'block'}`}>
+    <h2 className="text-2xl md:text-3xl lg:text-5xl text-center font-bold italic underline pt-32">Login and join</h2>
+  <div className="flex justify-center  py-12	">
+<Link to={"/login"}>
+<button className="button222">
+    J O I N 
+    <div id="clip12">
+        <div id="leftTop" className="corner9"></div>
+        <div id="rightBottom" className="corner9"></div>
+        <div id="rightTop" className="corner9"></div>
+        <div id="leftBottom" className="corner9"></div>
+    </div>
+    <span id="rightArrow" className="arrow12"></span>
+    <span id="leftArrow" className="arrow12"></span>
+</button>
+</Link>
+  </div>
+
+
+</div>
+
                 </div>
 
             </div>

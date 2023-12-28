@@ -1,5 +1,4 @@
-.form-container {
-  /* width: 400px; */
+/* .form-container {
   background: linear-gradient(#212121, #212121) padding-box,
     linear-gradient(145deg, transparent 35%, #e81cff, #40c9ff) border-box;
   border: 2px solid transparent;
@@ -70,7 +69,6 @@
   border-radius: 4px;
   resize: none;
   color: #fff;
-  /* height: 96px; */
   border: 1px solid #414141;
   background-color: transparent;
   font-family: inherit;
@@ -112,4 +110,4 @@
 .form-container .form-submit-btn:hover {
   background-color: #fff;
   border-color: #fff;
-}
+} */
